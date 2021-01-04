@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}
+home
+{% endblock title %}
+
+{% block content %}
+    <input id="server_name" class="form-control mb-3" placeholder="Server Name">
+    <input id="cluster_name" class="form-control mb-3" placeholder="Cluster Name">
+    <input id="cluster_version" class="form-control mb-3" placeholder="Cluster Version">
+    <input id="server_role" class="form-control mb-3" placeholder="Server Role">
+    <div id="box">
+        <table>
+            <tr>
+                <th>Server Name</th>
+                <th>Cluster Name</th>
+                <th>Cluster Version</th>
+                <th>Server Role</th>
+            </tr>
+        </table>
+            {% for item in object_list %}
+                {{item}}<br>
+            {% endfor %}
+        
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    const data = '{{qs_json}}'
+    
+    const rdata = JSON.parse(data.replace(/&quot;/g, '"'))
+    console.log(rdata)
+
+    const server_name = document.getElementById('server_name')
+    const cluster_name = document.getElementById('cluster_name')
+    const cluster_version = document.getElementById('cluster_version')
+    const server_role = document.getElementById('server_role')
+
+    let filteredArray = []
+
+    server_name.addEventListener('keyup', (e) => {
+        box.innerHTML = "<table><tr><th>Server Name</th><th>Cluster Name</th><th>Cluster Version</th><th>Server Role</th></tr>"
+        filteredArray = rdata.filter(server => server['server_name'].includes(e.target.value))
+        console.log(filteredArray)
+        if (filteredArray.length > 0) {
+            filteredArray.map(server => {
+                box.innerHTML += `<tr><td>${server['server_name']}</td><td>${server['cluster_name']}</td><td>${server['cluster_version']}</td><td>${server['server_role']}</td></tr><br>`
+            })
+            box.innerHTML += "</table>"     
+        } else {
+            box.innerHTML = `<br>No Results found!!</br><br>`
+        }
+    })
+
+    cluster_name.addEventListener('keyup', (e) => {
+        box.innerHTML = ""
+        filteredArray = rdata.filter(server => server['cluster_name'].includes(e.target.value))
+        console.log(filteredArray)
+        if (filteredArray.length > 0) {
+            filteredArray.map(server => {
+                box.innerHTML += `<tr><td>${server['server_name']}</td><td>${server['cluster_name']}</td><td>${server['cluster_version']}</td><td>${server['server_role']}</td></tr><br>`
+            })
+        } else {
+            box.innerHTML = `<br>No Results found!!</br><br>`
+        }
+    })
+
+    cluster_version.addEventListener('keyup', (e) => {
+        box.innerHTML = ""
+        filteredArray = rdata.filter(server => server['cluster_version'].includes(e.target.value))
+        console.log(filteredArray)
+        if (filteredArray.length > 0) {
+            filteredArray.map(server => {
+                box.innerHTML += `<tr><td>${server['server_name']}</td><td>${server['cluster_name']}</td><td>${server['cluster_version']}</td><td>${server['server_role']}</td></tr><br>`
+            })
+        } else {
+            box.innerHTML = `<br>No Results found!!</br><br>`
+        }
+    })
+
+    server_role.addEventListener('keyup', (e) => {
+        box.innerHTML = ""
+        filteredArray = rdata.filter(server => server['server_role'].includes(e.target.value))
+        console.log(filteredArray)
+        if (filteredArray.length > 0) {
+            filteredArray.map(server => {
+                box.innerHTML += `<tr><td>${server['server_name']}</td><td>${server['cluster_name']}</td><td>${server['cluster_version']}</td><td>${server['server_role']}</td></tr><br>`
+            })
+        } else {
+            box.innerHTML = `<br>No Results found!!</br><br>`
+        }
+    })
+    // TODO: FilteredArray to share between all event listners
+    // TODO: Check why the html table not working
+</script>
+{% endblock scripts %}
